@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Users, Award, Building, Calendar, Target } from 'lucide-react';
+import { BookOpen, Users, Award, Calendar } from 'lucide-react';
+import FAQ from '@/components/FAQ';
 
 const About: React.FC = () => {
   const stats = [
@@ -36,6 +37,7 @@ const About: React.FC = () => {
           </div>
         </div>
       </div>
+      <FAQ />
     </motion.div>
   );
 };
