@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import collegeLogo from '@/assets/images/college-logo.png';
 
 interface SplashScreenProps {
   onComplete?: () => void;
@@ -47,90 +48,50 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
 
           {/* Content */}
           <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-xl px-8">
-            {/* Book Animation */}
+            {/* College Logo Animation */}
             <motion.div
-              className="relative w-48 h-48 flex items-center justify-center mb-12"
-              initial={{ scale: 0.5, opacity: 0 }}
+              className="relative mb-8"
+              initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              style={{ perspective: '1000px' }}
+              transition={{ duration: 0.8, delay: 0.5, type: 'spring', bounce: 0.4 }}
             >
-              {/* Left Book */}
               <motion.div
-                className="absolute text-white drop-shadow-2xl"
-                style={{ left: '30%', transformStyle: 'preserve-3d' }}
-                initial={{ rotateY: 0 }}
-                animate={{ rotateY: -30 }}
-                transition={{ duration: 1, delay: 0.8 }}
+                className="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-white shadow-2xl flex items-center justify-center overflow-hidden"
+                animate={{ 
+                  boxShadow: [
+                    '0 0 20px rgba(255,255,255,0.3)',
+                    '0 0 40px rgba(255,255,255,0.5)',
+                    '0 0 20px rgba(255,255,255,0.3)'
+                  ]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
               >
-                <BookOpen size={80} />
-              </motion.div>
-
-              {/* Right Book */}
-              <motion.div
-                className="absolute text-white drop-shadow-2xl"
-                style={{ right: '30%', transformStyle: 'preserve-3d' }}
-                initial={{ rotateY: 0 }}
-                animate={{ rotateY: 30 }}
-                transition={{ duration: 1, delay: 0.8 }}
-              >
-                <BookOpen size={80} />
-              </motion.div>
-
-              {/* Floating Pages */}
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-10 h-16 bg-gradient-to-br from-white to-gray-100 rounded"
-                  style={{
-                    top: '50%',
-                    left: `${35 + i * 10}%`,
-                    boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-                  }}
-                  initial={{ y: 0, opacity: 0, rotate: 0 }}
-                  animate={{
-                    y: [-20, -60, -100],
-                    opacity: [0, 1, 0],
-                    rotate: [0, 10, -10],
-                  }}
-                  transition={{
-                    duration: 2,
-                    delay: 1 + i * 0.3,
-                    repeat: Infinity,
-                    repeatDelay: 1,
-                  }}
+                <img
+                  src={collegeLogo}
+                  alt="GCMN College Logo"
+                  className="w-28 h-28 md:w-36 md:h-36 object-contain"
                 />
-              ))}
-
-              {/* Sparkles */}
+              </motion.div>
+              
+              {/* Sparkles around logo */}
               <motion.div
-                className="absolute -top-4 -right-4 text-pakistan-gold"
+                className="absolute -top-2 -right-2 text-pakistan-gold"
                 initial={{ scale: 0, rotate: 0 }}
                 animate={{ scale: [0, 1, 1.2, 1], rotate: [0, 360] }}
                 transition={{ duration: 1.5, delay: 1.2 }}
               >
-                <Sparkles size={32} />
+                <Sparkles size={24} />
+              </motion.div>
+              <motion.div
+                className="absolute -bottom-2 -left-2 text-pakistan-gold"
+                initial={{ scale: 0, rotate: 0 }}
+                animate={{ scale: [0, 1, 1.2, 1], rotate: [0, -360] }}
+                transition={{ duration: 1.5, delay: 1.4 }}
+              >
+                <Sparkles size={20} />
               </motion.div>
             </motion.div>
 
-            {/* Logo */}
-            <motion.div
-              className="mb-6"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 1.5 }}
-            >
-              <div className="w-24 h-24 rounded-2xl bg-white shadow-xl flex items-center justify-center overflow-hidden animate-pulse-glow">
-                <img
-                  src="/college-logo.png"
-                  alt="GCMN Logo"
-                  className="w-20 h-20 object-contain"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
-              </div>
-            </motion.div>
 
             {/* Title */}
             <motion.h1
