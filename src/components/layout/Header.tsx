@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, BookOpen, User, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, X, BookOpen, User, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
+import collegeLogo from '@/assets/images/college-logo.png';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,12 +54,9 @@ const Header: React.FC = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 hover:scale-[1.02] transition-transform">
             <img
-              src="/college-logo.png"
-              alt="GCMN Logo"
-              className="w-12 h-12 object-contain rounded-lg"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
-              }}
+              src={collegeLogo}
+              alt="GCMN College Logo"
+              className="w-12 h-12 object-contain rounded-lg bg-white p-1 shadow-sm"
             />
             <div className="flex flex-col">
               <span className="text-lg font-bold text-primary leading-tight">GCMN Library</span>
