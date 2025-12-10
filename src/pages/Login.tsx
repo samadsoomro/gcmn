@@ -104,10 +104,6 @@ const Login: React.FC = () => {
             Register here
           </Link>
         </p>
-        
-        <p className="text-center text-xs text-muted-foreground mt-4">
-          Demo: admin@gcmn.edu.pk / admin123
-        </p>
       </motion.div>
     </motion.div>
   );
