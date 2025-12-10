@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, UserPlus, AlertCircle, Phone, GraduationCap } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, AlertCircle, Phone, GraduationCap, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,8 +19,9 @@ const Register: React.FC = () => {
     confirmPassword: '',
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { register } = useAuth();
+  const { register, user } = useAuth();
   const navigate = useNavigate();
 
   const departments = [
@@ -30,6 +31,13 @@ const Register: React.FC = () => {
     'Humanities',
     'Commerce',
   ];
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,12 +70,38 @@ const Register: React.FC = () => {
     });
     
     if (result.success) {
-      navigate('/');
+      setSuccess(true);
     } else {
       setError(result.error || 'Registration failed');
     }
     setLoading(false);
   };
+
+  if (success) {
+    return (
+      <motion.div 
+        className="min-h-screen flex items-center justify-center p-4 pakistan-bg pt-24" 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }}
+      >
+        <motion.div 
+          className="w-full max-w-md bg-card p-8 rounded-2xl shadow-xl border border-border text-center" 
+          initial={{ y: 20, opacity: 0 }} 
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <CheckCircle size={64} className="mx-auto text-emerald-500 mb-4" />
+          <h1 className="text-2xl font-bold text-foreground mb-2">Registration Successful!</h1>
+          <p className="text-muted-foreground mb-6">
+            Your account has been created successfully. You can now log in to access the library.
+          </p>
+          <Link to="/login">
+            <Button className="w-full">Go to Login</Button>
+          </Link>
+        </motion.div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, BookOpen, User, LogOut } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, BookOpen, User, LogOut, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,8 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const { user, profile, isAdmin, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +26,11 @@ const Header: React.FC = () => {
     setIsMenuOpen(false);
   }, [location]);
 
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
+
   const navLinks = [
     { path: '/', label: 'Home' },
     { path: '/books', label: 'Books' },
@@ -34,9 +40,12 @@ const Header: React.FC = () => {
     { path: '/contact', label: 'Contact' },
   ];
 
-  const displayNavLinks = user?.role === 'admin'
-    ? [...navLinks, { path: '/admin', label: 'Admin', isAdmin: true }]
-    : navLinks;
+  const adminLinks = isAdmin
+    ? [
+        { path: '/admin/messages', label: 'Messages' },
+        { path: '/admin/books/borrow', label: 'Borrowed Books' },
+      ]
+    : [];
 
   return (
     <motion.header
@@ -68,7 +77,7 @@ const Header: React.FC = () => {
 
           {/* Desktop Nav */}
           <ul className="hidden lg:flex items-center gap-6">
-            {displayNavLinks.map((link) => (
+            {navLinks.map((link) => (
               <li key={link.path}>
                 <Link
                   to={link.path}
@@ -88,6 +97,27 @@ const Header: React.FC = () => {
                 </Link>
               </li>
             ))}
+            {adminLinks.map((link) => (
+              <li key={link.path}>
+                <Link
+                  to={link.path}
+                  className={`relative font-medium transition-colors py-2 flex items-center gap-1 ${
+                    location.pathname === link.path
+                      ? 'text-primary'
+                      : 'text-foreground hover:text-primary'
+                  }`}
+                >
+                  <Shield size={14} />
+                  {link.label}
+                  {location.pathname === link.path && (
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full"
+                      layoutId="navbar-indicator"
+                    />
+                  )}
+                </Link>
+              </li>
+            ))}
           </ul>
 
           {/* Auth Buttons */}
@@ -96,17 +126,16 @@ const Header: React.FC = () => {
               <>
                 <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary">
                   <User size={18} className="text-primary" />
-                  <span className="text-sm font-medium">{user.full_name}</span>
+                  <span className="text-sm font-medium">
+                    {profile?.full_name || user.email?.split('@')[0] || 'User'}
+                  </span>
+                  {isAdmin && (
+                    <span className="text-xs px-1.5 py-0.5 bg-primary text-primary-foreground rounded">
+                      Admin
+                    </span>
+                  )}
                 </div>
-                {user.role === 'student' && (
-                  <Link to="/my-borrowings">
-                    <Button variant="outline" size="sm">
-                      <BookOpen size={16} className="mr-2" />
-                      My Books
-                    </Button>
-                  </Link>
-                )}
-                <Button variant="ghost" size="sm" onClick={logout}>
+                <Button variant="ghost" size="sm" onClick={handleLogout}>
                   <LogOut size={16} className="mr-2" />
                   Logout
                 </Button>
@@ -144,7 +173,7 @@ const Header: React.FC = () => {
               transition={{ duration: 0.2 }}
             >
               <ul className="py-4 space-y-2">
-                {displayNavLinks.map((link) => (
+                {navLinks.map((link) => (
                   <li key={link.path}>
                     <Link
                       to={link.path}
@@ -158,15 +187,37 @@ const Header: React.FC = () => {
                     </Link>
                   </li>
                 ))}
+                {adminLinks.map((link) => (
+                  <li key={link.path}>
+                    <Link
+                      to={link.path}
+                      className={`block px-4 py-3 rounded-lg transition-colors flex items-center gap-2 ${
+                        location.pathname === link.path
+                          ? 'bg-primary text-primary-foreground'
+                          : 'hover:bg-secondary'
+                      }`}
+                    >
+                      <Shield size={16} />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
                 
                 <li className="pt-4 border-t border-border">
                   {user ? (
                     <div className="space-y-2 px-4">
                       <div className="flex items-center gap-2 py-2">
                         <User size={18} className="text-primary" />
-                        <span className="font-medium">{user.full_name}</span>
+                        <span className="font-medium">
+                          {profile?.full_name || user.email?.split('@')[0] || 'User'}
+                        </span>
+                        {isAdmin && (
+                          <span className="text-xs px-1.5 py-0.5 bg-primary text-primary-foreground rounded">
+                            Admin
+                          </span>
+                        )}
                       </div>
-                      <Button variant="outline" className="w-full" onClick={logout}>
+                      <Button variant="outline" className="w-full" onClick={handleLogout}>
                         <LogOut size={16} className="mr-2" />
                         Logout
                       </Button>

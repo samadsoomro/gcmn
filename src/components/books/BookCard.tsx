@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, User, Calendar, MapPin } from 'lucide-react';
+import { BookOpen, User, Calendar, MapPin, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Book } from '@/utils/constants';
 
@@ -8,9 +8,10 @@ interface BookCardProps {
   book: Book;
   onBorrow?: (book: Book) => void;
   onViewDetails?: (book: Book) => void;
+  isBorrowing?: boolean;
 }
 
-const BookCard: React.FC<BookCardProps> = ({ book, onBorrow, onViewDetails }) => {
+const BookCard: React.FC<BookCardProps> = ({ book, onBorrow, onViewDetails, isBorrowing = false }) => {
   const isAvailable = book.available_copies > 0 && book.status === 'available';
 
   return (
@@ -88,10 +89,19 @@ const BookCard: React.FC<BookCardProps> = ({ book, onBorrow, onViewDetails }) =>
           <Button
             size="sm"
             className="flex-1"
-            disabled={!isAvailable}
+            disabled={!isAvailable || isBorrowing}
             onClick={() => onBorrow?.(book)}
           >
-            {isAvailable ? 'Borrow' : 'Unavailable'}
+            {isBorrowing ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Borrowing...
+              </>
+            ) : isAvailable ? (
+              'Borrow'
+            ) : (
+              'Unavailable'
+            )}
           </Button>
         </div>
       </div>

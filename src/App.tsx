@@ -8,6 +8,7 @@ import { useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SplashScreen from "@/components/common/SplashScreen";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Home from "@/pages/Home";
 import Books from "@/pages/Books";
 import Notes from "@/pages/Notes";
@@ -17,6 +18,7 @@ import Contact from "@/pages/Contact";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import AdminMessages from "@/pages/admin/Messages";
+import BorrowedBooks from "@/pages/admin/BorrowedBooks";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,7 +43,22 @@ const AppContent = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/admin/messages" element={<AdminMessages />} />
+          <Route
+            path="/admin/messages"
+            element={
+              <ProtectedRoute requireAdmin>
+                <AdminMessages />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/books/borrow"
+            element={
+              <ProtectedRoute requireAdmin>
+                <BorrowedBooks />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
@@ -52,15 +69,15 @@ const AppContent = () => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
           <AppContent />
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+        </TooltipProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </QueryClientProvider>
 );
 
