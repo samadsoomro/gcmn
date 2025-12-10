@@ -61,7 +61,7 @@ export const DEPARTMENTS = [
 
 // Sample Books Data
 export interface Book {
-  book_id: number;
+  book_id: string;
   title: string;
   author: string;
   category: string;
@@ -78,7 +78,7 @@ export interface Book {
 
 export const SAMPLE_BOOKS: Book[] = [
   {
-    book_id: 1,
+    book_id: '1',
     title: 'Introduction to Algorithms',
     author: 'Thomas H. Cormen',
     category: 'Computer Science',
@@ -92,7 +92,7 @@ export const SAMPLE_BOOKS: Book[] = [
     status: 'available'
   },
   {
-    book_id: 2,
+    book_id: '2',
     title: 'Clean Code',
     author: 'Robert C. Martin',
     category: 'Computer Science',
@@ -106,7 +106,7 @@ export const SAMPLE_BOOKS: Book[] = [
     status: 'available'
   },
   {
-    book_id: 3,
+    book_id: '3',
     title: 'Calculus: Early Transcendentals',
     author: 'James Stewart',
     category: 'Mathematics',
@@ -120,7 +120,7 @@ export const SAMPLE_BOOKS: Book[] = [
     status: 'available'
   },
   {
-    book_id: 4,
+    book_id: '4',
     title: 'Fundamentals of Physics',
     author: 'Halliday, Resnick, Walker',
     category: 'Physics',
@@ -134,7 +134,7 @@ export const SAMPLE_BOOKS: Book[] = [
     status: 'available'
   },
   {
-    book_id: 5,
+    book_id: '5',
     title: 'Organic Chemistry',
     author: 'Morrison and Boyd',
     category: 'Chemistry',
@@ -148,7 +148,7 @@ export const SAMPLE_BOOKS: Book[] = [
     status: 'available'
   },
   {
-    book_id: 6,
+    book_id: '6',
     title: 'Cell Biology',
     author: 'Alberts et al.',
     category: 'Biology',

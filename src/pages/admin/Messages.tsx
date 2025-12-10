@@ -38,7 +38,7 @@ interface ContactMessage {
 }
 
 const AdminMessages: React.FC = () => {
-  const { user } = useAuth();
+  const { user, isAdmin, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -153,7 +153,15 @@ const AdminMessages: React.FC = () => {
   };
 
   // Check if user is admin
-  if (!user || user.role !== 'admin') {
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="loading-spinner" />
+      </div>
+    );
+  }
+
+  if (!user || !isAdmin) {
     return <Navigate to="/login" replace />;
   }
 
