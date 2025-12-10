@@ -13,6 +13,7 @@ const Register: React.FC = () => {
     full_name: '',
     email: '',
     phone: '',
+    roll_number: '',
     department: '',
     password: '',
     confirmPassword: '',
@@ -24,16 +25,10 @@ const Register: React.FC = () => {
 
   const departments = [
     'Computer Science',
+    'Pre-Medical',
+    'Pre-Engineering',
+    'Humanities',
     'Commerce',
-    'Arts',
-    'Science',
-    'Economics',
-    'Mathematics',
-    'Physics',
-    'Chemistry',
-    'English',
-    'Urdu',
-    'Islamic Studies',
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -62,6 +57,7 @@ const Register: React.FC = () => {
       password: formData.password,
       full_name: formData.full_name,
       phone: formData.phone,
+      roll_number: formData.roll_number,
       department: formData.department,
     });
     
@@ -146,8 +142,21 @@ const Register: React.FC = () => {
           
           <div>
             <label className="text-sm font-medium text-foreground flex items-center gap-2 mb-2">
+              <User size={16} />
+              Roll Number
+            </label>
+            <Input 
+              type="text" 
+              value={formData.roll_number} 
+              onChange={(e) => setFormData({ ...formData, roll_number: e.target.value })} 
+              placeholder="E-125" 
+            />
+          </div>
+          
+          <div>
+            <label className="text-sm font-medium text-foreground flex items-center gap-2 mb-2">
               <GraduationCap size={16} />
-              Department
+              Field/Group
             </label>
             <Select 
               value={formData.department} 
