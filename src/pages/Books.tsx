@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, Filter, BookOpen } from 'lucide-react';
 import BookCard from '@/components/books/BookCard';
@@ -6,6 +7,8 @@ import { BOOK_CATEGORIES, SAMPLE_BOOKS, type Book } from '@/utils/constants';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const Books: React.FC = () => {
   const [books, setBooks] = useState<Book[]>(SAMPLE_BOOKS);
@@ -13,7 +16,10 @@ const Books: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
+  const [borrowingId, setBorrowingId] = useState<string | null>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Simulate loading
@@ -43,11 +49,65 @@ const Books: React.FC = () => {
     setFilteredBooks(result);
   }, [books, searchTerm, selectedCategory]);
 
-  const handleBorrow = (book: Book) => {
-    toast({
-      title: 'Book Added to Cart',
-      description: `"${book.title}" has been added to your borrowing cart.`,
-    });
+  const handleBorrow = async (book: Book) => {
+    // Check if user is logged in
+    if (!user) {
+      toast({
+        title: 'Login Required',
+        description: 'Please login or register to borrow books.',
+        variant: 'destructive',
+      });
+      navigate('/login', { state: { from: { pathname: '/books' } } });
+      return;
+    }
+
+    setBorrowingId(book.book_id);
+
+    try {
+      // Check if book is already borrowed by this user
+      const { data: existingBorrow } = await supabase
+        .from('book_borrows')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('book_id', book.book_id)
+        .eq('status', 'borrowed')
+        .maybeSingle();
+
+      if (existingBorrow) {
+        toast({
+          title: 'Already Borrowed',
+          description: 'You have already borrowed this book.',
+          variant: 'destructive',
+        });
+        setBorrowingId(null);
+        return;
+      }
+
+      // Create borrow record
+      const { error } = await supabase
+        .from('book_borrows')
+        .insert({
+          user_id: user.id,
+          book_id: book.book_id,
+          book_title: book.title,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Book Borrowed Successfully!',
+        description: `"${book.title}" has been added to your borrowed books. Due in 14 days.`,
+      });
+    } catch (error) {
+      console.error('Error borrowing book:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to borrow book. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setBorrowingId(null);
+    }
   };
 
   const handleViewDetails = (book: Book) => {
@@ -83,6 +143,16 @@ const Books: React.FC = () => {
           >
             Browse our extensive collection of academic books and resources
           </motion.p>
+          {!user && (
+            <motion.p
+              className="text-sm text-primary mt-4"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              Login or register to borrow books
+            </motion.p>
+          )}
         </div>
       </div>
 
@@ -140,6 +210,7 @@ const Books: React.FC = () => {
                       book={book}
                       onBorrow={handleBorrow}
                       onViewDetails={handleViewDetails}
+                      isBorrowing={borrowingId === book.book_id}
                     />
                   </motion.div>
                 ))}

@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      book_borrows: {
+        Row: {
+          book_id: string
+          book_title: string
+          borrow_date: string
+          created_at: string
+          due_date: string
+          id: string
+          return_date: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          book_id: string
+          book_title: string
+          borrow_date?: string
+          created_at?: string
+          due_date?: string
+          id?: string
+          return_date?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          book_id?: string
+          book_title?: string
+          borrow_date?: string
+          created_at?: string
+          due_date?: string
+          id?: string
+          return_date?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           created_at: string
