@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Youtube, Clock, ExternalLink } from 'lucide-react';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -75,15 +75,29 @@ const Footer: React.FC = () => {
               </ul>
             </div>
 
-            {/* Resources */}
+            {/* Office Hours & Resources */}
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Resources</h3>
+              <h3 className="text-xl font-semibold">Office Hours</h3>
+              <ul className="space-y-2 text-white/80 text-sm">
+                <li className="flex items-center gap-2">
+                  <Clock size={14} className="text-accent" />
+                  <span>Mon–Fri: 9:00 AM – 1:00 PM</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Clock size={14} className="text-accent" />
+                  <span>Sat: 9:00 AM – 12:00 PM</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Clock size={14} className="text-muted-foreground" />
+                  <span>Sun: Closed</span>
+                </li>
+              </ul>
+              
+              <h4 className="text-lg font-semibold pt-4">Resources</h4>
               <ul className="space-y-2">
                 {[
                   { to: '/login', label: 'Student Login' },
                   { to: '/register', label: 'Register' },
-                  { to: '/notes', label: 'Download Notes' },
-                  { to: '/books', label: 'Book Catalog' },
                   { to: '/contact', label: 'Contact Us' },
                 ].map((link) => (
                   <li key={link.to}>
@@ -115,7 +129,31 @@ const Footer: React.FC = () => {
                   <span>library@gcmn.edu.pk</span>
                 </li>
               </ul>
+              
+              <a
+                href="https://maps.app.goo.gl/yrPZQ5gmXNzkBEAQ7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-accent hover:text-white text-sm mt-2 transition-colors"
+              >
+                <ExternalLink size={14} />
+                View on Google Maps
+              </a>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Credits Section */}
+      <div className="border-t border-white/10 py-6">
+        <div className="container">
+          <div className="text-center space-y-3">
+            <p className="text-white/90 text-sm font-medium">
+              Made by the Computer Science Department of GCMN
+            </p>
+            <p className="text-white/70 text-xs">
+              Contributors: Sir Ubaid Anwar (Head of Computer Department), Abdul Samad, Muhammad Salman Bhatti – Class 12 (CS Field)
+            </p>
           </div>
         </div>
       </div>

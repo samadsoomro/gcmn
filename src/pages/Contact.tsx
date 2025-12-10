@@ -1,35 +1,289 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, User, MessageSquare, FileText } from 'lucide-react';
 import { LIBRARY_LOCATION } from '@/utils/constants';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Contact: React.FC = () => {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Save to database
+      const { error: dbError } = await supabase
+        .from('contact_messages')
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        });
+
+      if (dbError) {
+        console.error('Database error:', dbError);
+        throw new Error('Failed to save message');
+      }
+
+      // Send confirmation email
+      const { error: emailError } = await supabase.functions.invoke('send-contact-confirmation', {
+        body: {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        },
+      });
+
+      if (emailError) {
+        console.error('Email error:', emailError);
+        // Don't throw - message is saved, email just failed
+      }
+
+      setShowSuccess(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for contacting us. Your query has been received.",
+      });
+
+    } catch (error) {
+      console.error('Submit error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <motion.div className="min-h-screen pt-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      {/* Hero Section */}
       <div className="py-12 lg:py-16 gradient-dark text-white text-center">
         <div className="container">
           <h1 className="text-3xl lg:text-4xl font-bold mb-4">Contact Us</h1>
           <p className="text-lg text-white/90">Get in touch with GCMN Library</p>
         </div>
       </div>
+
       <div className="py-12 lg:py-16">
         <div className="container">
+          {/* Contact Info Cards */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {[
               { icon: <MapPin />, title: 'Address', content: 'Nazimabad, Karachi, Pakistan' },
               { icon: <Phone />, title: 'Phone', content: '+92 21 XXXX XXXX' },
               { icon: <Mail />, title: 'Email', content: 'library@gcmn.edu.pk' },
-              { icon: <Clock />, title: 'Hours', content: 'Mon-Fri: 8AM - 5PM' },
+              { icon: <Clock />, title: 'Hours', content: 'Mon-Fri: 9AM - 1PM' },
             ].map((item, i) => (
-              <motion.div key={item.title} className="bg-card p-6 rounded-xl border border-border text-center hover:shadow-lg transition-all" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
-                <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-primary/10 rounded-full text-primary">{item.icon}</div>
+              <motion.div 
+                key={item.title} 
+                className="bg-card p-6 rounded-xl border border-border text-center hover:shadow-lg transition-all" 
+                initial={{ opacity: 0, y: 20 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ delay: i * 0.1 }}
+              >
+                <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-primary/10 rounded-full text-primary">
+                  {item.icon}
+                </div>
                 <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
                 <p className="text-muted-foreground text-sm">{item.content}</p>
               </motion.div>
             ))}
           </div>
-          <div className="rounded-xl overflow-hidden h-80 border border-border">
-            <iframe src={LIBRARY_LOCATION.embedUrl} width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="GCMN Location" />
+
+          {/* Contact Form and Map Grid */}
+          <div className="grid lg:grid-cols-2 gap-8 mb-12">
+            {/* Contact Form */}
+            <motion.div 
+              className="bg-card p-8 rounded-xl border border-border"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+                <MessageSquare className="text-primary" />
+                Send Us a Message
+              </h2>
+
+              {showSuccess ? (
+                <motion.div 
+                  className="text-center py-12"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                >
+                  <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center bg-green-100 rounded-full">
+                    <Send className="w-10 h-10 text-green-600" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-foreground mb-2">Thank You!</h3>
+                  <p className="text-muted-foreground mb-6">
+                    Thank you for contacting us. Your query has been received.<br />
+                    We'll get back to you soon.
+                  </p>
+                  <Button onClick={() => setShowSuccess(false)}>Send Another Message</Button>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div>
+                    <label className="text-sm font-medium text-foreground flex items-center gap-2 mb-2">
+                      <User size={16} />
+                      Name
+                    </label>
+                    <Input 
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Your full name"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-foreground flex items-center gap-2 mb-2">
+                      <Mail size={16} />
+                      Email
+                    </label>
+                    <Input 
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="your.email@example.com"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-foreground flex items-center gap-2 mb-2">
+                      <FileText size={16} />
+                      Subject
+                    </label>
+                    <Input 
+                      type="text"
+                      value={formData.subject}
+                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      placeholder="Topic of your message"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-foreground flex items-center gap-2 mb-2">
+                      <MessageSquare size={16} />
+                      Message
+                    </label>
+                    <Textarea 
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      placeholder="How can we help you?"
+                      rows={5}
+                      required
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>Sending...</>
+                    ) : (
+                      <>
+                        <Send size={18} className="mr-2" />
+                        Send Message
+                      </>
+                    )}
+                  </Button>
+                </form>
+              )}
+            </motion.div>
+
+            {/* Map */}
+            <motion.div 
+              className="rounded-xl overflow-hidden border border-border h-full min-h-[400px]"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3619.5430358880396!2d67.03380137496951!3d24.920700041252727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33f90157042d3%3A0x93d609e8bdb6ac95!2sGovernment%20College%20for%20Men%20Nazimabad!5e0!3m2!1sen!2s!4v1704067200000!5m2!1sen!2s"
+                width="100%" 
+                height="100%" 
+                style={{ border: 0, minHeight: '400px' }} 
+                allowFullScreen 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade" 
+                title="GCMN Location" 
+              />
+            </motion.div>
+          </div>
+
+          {/* Office Hours Section */}
+          <motion.div 
+            className="bg-card p-8 rounded-xl border border-border mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+              <Clock className="text-primary" />
+              Office Hours
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="text-center p-4 bg-primary/5 rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2">Monday - Friday</h4>
+                <p className="text-primary text-lg font-medium">9:00 AM – 1:00 PM</p>
+              </div>
+              <div className="text-center p-4 bg-primary/5 rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2">Saturday</h4>
+                <p className="text-primary text-lg font-medium">9:00 AM – 12:00 PM</p>
+              </div>
+              <div className="text-center p-4 bg-muted rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2">Sunday</h4>
+                <p className="text-muted-foreground text-lg font-medium">Closed</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Google Maps Link */}
+          <div className="text-center">
+            <a 
+              href="https://maps.app.goo.gl/yrPZQ5gmXNzkBEAQ7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-primary hover:underline"
+            >
+              <MapPin size={18} />
+              View on Google Maps
+            </a>
           </div>
         </div>
       </div>

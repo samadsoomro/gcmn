@@ -7,8 +7,8 @@ export const LIBRARY_LOCATION = {
   lat: 24.9207,
   lng: 67.0338,
   address: 'Nazimabad, Karachi, Pakistan',
-  mapUrl: 'https://maps.app.goo.gl/erR98wVW9iwRzXi6A',
-  embedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3619.0!2d67.0338!3d24.9207!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjTCsDU1JzE0LjUiTiA2N8KwMDInMDEuNyJF!5e0!3m2!1sen!2s!4v1234567890'
+  mapUrl: 'https://maps.app.goo.gl/yrPZQ5gmXNzkBEAQ7',
+  embedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3619.5430358880396!2d67.03380137496951!3d24.920700041252727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33f90157042d3%3A0x93d609e8bdb6ac95!2sGovernment%20College%20for%20Men%20Nazimabad!5e0!3m2!1sen!2s!4v1704067200000!5m2!1sen!2s'
 };
 
 // Classes/Semesters

@@ -16,6 +16,7 @@ import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
+import AdminMessages from "@/pages/admin/Messages";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const AppContent = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/admin/messages" element={<AdminMessages />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
