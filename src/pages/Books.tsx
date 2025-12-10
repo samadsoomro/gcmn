@@ -69,7 +69,7 @@ const Books: React.FC = () => {
         .from('book_borrows')
         .select('id')
         .eq('user_id', user.id)
-        .eq('book_id', book.book_id)
+        .eq('book_id', String(book.book_id))
         .eq('status', 'borrowed')
         .maybeSingle();
 
@@ -88,7 +88,7 @@ const Books: React.FC = () => {
         .from('book_borrows')
         .insert({
           user_id: user.id,
-          book_id: book.book_id,
+          book_id: String(book.book_id),
           book_title: book.title,
         });
 
