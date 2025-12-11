@@ -28,6 +28,7 @@ interface RegisterData {
   email: string;
   password: string;
   phone?: string;
+  student_class?: string;
   roll_number?: string;
   department?: string;
 }
@@ -174,6 +175,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             user_id: data.user.id,
             full_name: userData.full_name,
             phone: userData.phone || null,
+            student_class: userData.student_class || null,
             roll_number: userData.roll_number || null,
             department: userData.department || null,
           });
