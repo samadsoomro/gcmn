@@ -125,12 +125,16 @@ const Header: React.FC = () => {
             ))}
           </ul>
 
-          {/* Theme Toggle, Donate & Auth Buttons */}
+          {/* Theme Toggle, Library Card, Donate & Auth Buttons */}
           <div className="hidden lg:flex items-center gap-3">
+            <Link to="/library-card">
+              <Button variant="outline" size="icon" className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground" title="Library Card">
+                <CreditCard size={18} />
+              </Button>
+            </Link>
             <Link to="/donate">
-              <Button variant="outline" size="sm" className="gap-2 border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground">
-                <Heart size={16} />
-                Donate
+              <Button variant="outline" size="icon" className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground" title="Donate">
+                <Heart size={18} />
               </Button>
             </Link>
             <ThemeToggle />
@@ -166,8 +170,13 @@ const Header: React.FC = () => {
 
           {/* Mobile Theme Toggle & Menu Toggle */}
           <div className="lg:hidden flex items-center gap-2">
+            <Link to="/library-card">
+              <Button variant="outline" size="icon" className="border-primary/50 text-primary" title="Library Card">
+                <CreditCard size={18} />
+              </Button>
+            </Link>
             <Link to="/donate">
-              <Button variant="outline" size="icon" className="border-primary/50 text-primary">
+              <Button variant="outline" size="icon" className="border-primary/50 text-primary" title="Donate">
                 <Heart size={18} />
               </Button>
             </Link>
