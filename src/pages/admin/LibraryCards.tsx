@@ -22,7 +22,11 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Trash2, Download, CreditCard, RefreshCw } from "lucide-react";
 import { jsPDF } from "jspdf";
-import QRCode from "qrcode";
+
+// Helper function to generate QR code URL
+const getQRCodeUrl = (text: string, size: number = 100) => {
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}`;
+};
 
 interface LibraryCardApplication {
   id: string;
@@ -137,7 +141,16 @@ const LibraryCards = () => {
 
   const generatePDF = async (app: LibraryCardApplication) => {
     const doc = new jsPDF();
-    const qrCodeDataUrl = await QRCode.toDataURL(app.card_number, { width: 100, margin: 1 });
+    
+    // Fetch QR Code as image
+    const qrCodeUrl = getQRCodeUrl(app.card_number, 100);
+    const response = await fetch(qrCodeUrl);
+    const blob = await response.blob();
+    const qrCodeDataUrl = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(blob);
+    });
 
     // Card background
     doc.setFillColor(22, 78, 59);
