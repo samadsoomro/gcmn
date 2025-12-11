@@ -2,15 +2,17 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SplashScreen from "@/components/common/SplashScreen";
 import ScrollToTop from "@/components/common/ScrollToTop";
 import BackToTop from "@/components/common/BackToTop";
+import PageTransition from "@/components/common/PageTransition";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Home from "@/pages/Home";
 import Books from "@/pages/Books";
@@ -31,6 +33,68 @@ import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const AnimatedRoutes = () => {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+        <Route path="/books" element={<PageTransition><Books /></PageTransition>} />
+        <Route path="/notes" element={<PageTransition><Notes /></PageTransition>} />
+        <Route path="/rare-books" element={<PageTransition><RareBooks /></PageTransition>} />
+        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+        <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+        <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+        <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
+        <Route path="/library-card" element={<PageTransition><LibraryCard /></PageTransition>} />
+        <Route path="/donate" element={<PageTransition><Donate /></PageTransition>} />
+        <Route
+          path="/admin/messages"
+          element={
+            <ProtectedRoute requireAdmin>
+              <PageTransition><AdminMessages /></PageTransition>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/books/borrow"
+          element={
+            <ProtectedRoute requireAdmin>
+              <PageTransition><BorrowedBooks /></PageTransition>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/library-cards"
+          element={
+            <ProtectedRoute requireAdmin>
+              <PageTransition><AdminLibraryCards /></PageTransition>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/donations"
+          element={
+            <ProtectedRoute requireAdmin>
+              <PageTransition><AdminDonations /></PageTransition>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute requireAdmin>
+              <PageTransition><AdminRegisteredUsers /></PageTransition>
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
+
 const AppContent = () => {
   const [showSplash, setShowSplash] = useState(true);
 
@@ -43,59 +107,7 @@ const AppContent = () => {
       <ScrollToTop />
       <Header />
       <main className="flex-1">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/books" element={<Books />} />
-          <Route path="/notes" element={<Notes />} />
-          <Route path="/rare-books" element={<RareBooks />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/library-card" element={<LibraryCard />} />
-          <Route path="/donate" element={<Donate />} />
-          <Route
-            path="/admin/messages"
-            element={
-              <ProtectedRoute requireAdmin>
-                <AdminMessages />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/books/borrow"
-            element={
-              <ProtectedRoute requireAdmin>
-                <BorrowedBooks />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/library-cards"
-            element={
-              <ProtectedRoute requireAdmin>
-                <AdminLibraryCards />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/donations"
-            element={
-              <ProtectedRoute requireAdmin>
-                <AdminDonations />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/users"
-            element={
-              <ProtectedRoute requireAdmin>
-                <AdminRegisteredUsers />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AnimatedRoutes />
       </main>
       <Footer />
       <BackToTop />
