@@ -133,6 +133,10 @@ export default {
       boxShadow: {
         'glow': '0 0 20px hsl(var(--primary) / 0.3)',
         'glow-lg': '0 0 40px hsl(var(--primary) / 0.4)',
+        'shine': '0 2px 8px hsl(0 0% 0% / 0.04)',
+        'shine-hover': '0 4px 12px hsl(0 0% 0% / 0.06)',
+        'button': '0 2px 6px hsl(217 91% 60% / 0.25)',
+        'button-hover': '0 4px 12px hsl(217 91% 60% / 0.35)',
       },
     },
   },
