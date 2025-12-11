@@ -182,11 +182,11 @@ const Header: React.FC = () => {
             </Link>
             <ThemeToggle />
             <button
-              className="p-2 rounded-lg hover:bg-secondary transition-colors"
+              className="p-2 rounded-lg hover:bg-secondary transition-colors text-primary hover:text-primary/80"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
             >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMenuOpen ? <X size={24} className="text-primary" /> : <Menu size={24} className="text-primary" />}
             </button>
           </div>
         </nav>
