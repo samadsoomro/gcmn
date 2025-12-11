@@ -116,7 +116,7 @@
     --secondary-foreground: 0 0% 98%;
 
     --muted: 147 20% 18%;
-    --muted-foreground: 150 10% 65%;
+    --muted-foreground: 0 0% 75%;
 
     --accent: 43 74% 52%;
     --accent-foreground: 147 100% 8%;
@@ -127,6 +127,11 @@
     --border: 147 20% 18%;
     --input: 147 20% 18%;
     --ring: 150 75% 45%;
+    
+    /* Extended Colors - Dark Mode */
+    --bg-primary: 147 30% 8%;
+    --bg-secondary: 147 25% 12%;
+    --bg-tertiary: 147 20% 15%;
     
     --sidebar-background: 147 30% 8%;
     --sidebar-foreground: 0 0% 98%;
