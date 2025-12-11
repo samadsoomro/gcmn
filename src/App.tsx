@@ -9,6 +9,7 @@ import { useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SplashScreen from "@/components/common/SplashScreen";
+import ScrollToTop from "@/components/common/ScrollToTop";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Home from "@/pages/Home";
 import Books from "@/pages/Books";
@@ -38,6 +39,7 @@ const AppContent = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <ScrollToTop />
       <Header />
       <main className="flex-1">
         <Routes>
