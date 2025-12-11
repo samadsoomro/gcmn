@@ -247,20 +247,20 @@ const LibraryCard = () => {
     doc.setFillColor(22, 78, 59);
     doc.rect(15, 15, 180, 35, "F");
 
-    // Add logo
-    doc.addImage(logoDataUrl, "PNG", 90, 17, 30, 30);
+    // Add logo - Top Left
+    doc.addImage(logoDataUrl, "PNG", 20, 17, 30, 30);
 
-    // Government text
+    // Government text - positioned to the right of logo
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    doc.text("Government of Sindh", 105, 22, { align: "center" });
-    doc.text("College Education Department", 105, 27, { align: "center" });
+    doc.text("Government of Sindh", 125, 22, { align: "center" });
+    doc.text("College Education Department", 125, 27, { align: "center" });
 
     // College name
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.text("GOVT COLLEGE FOR MEN NAZIMABAD", 105, 47, { align: "center" });
+    doc.text("GOVT COLLEGE FOR MEN NAZIMABAD", 125, 37, { align: "center" });
 
     // Library Card title
     doc.setFontSize(10);
