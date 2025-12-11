@@ -28,7 +28,11 @@ import {
   CreditCard,
 } from "lucide-react";
 import { jsPDF } from "jspdf";
-import QRCode from "qrcode";
+
+// Helper function to generate QR code URL
+const getQRCodeUrl = (text: string, size: number = 100) => {
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}`;
+};
 
 const benefits = [
   { icon: BookOpen, title: "Borrow books, DVDs, and audiobooks" },
@@ -188,8 +192,15 @@ const LibraryCard = () => {
     const doc = new jsPDF();
     const { cardNumber, formData } = submissionResult;
 
-    // Generate QR Code
-    const qrCodeDataUrl = await QRCode.toDataURL(cardNumber, { width: 100, margin: 1 });
+    // Fetch QR Code as image
+    const qrCodeUrl = getQRCodeUrl(cardNumber, 100);
+    const response = await fetch(qrCodeUrl);
+    const blob = await response.blob();
+    const qrCodeDataUrl = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(blob);
+    });
 
     // Card background
     doc.setFillColor(22, 78, 59); // Primary green
