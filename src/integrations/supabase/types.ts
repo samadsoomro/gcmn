@@ -119,15 +119,21 @@ export type Database = {
           card_number: string | null
           class: string
           created_at: string
+          dob: string | null
           email: string
+          father_name: string | null
+          field: string | null
           first_name: string
           id: string
+          issue_date: string | null
           last_name: string
           phone: string
           roll_no: string
           status: string
+          student_id: string | null
           updated_at: string
           user_id: string | null
+          valid_through: string | null
         }
         Insert: {
           address_city: string
@@ -137,15 +143,21 @@ export type Database = {
           card_number?: string | null
           class: string
           created_at?: string
+          dob?: string | null
           email: string
+          father_name?: string | null
+          field?: string | null
           first_name: string
           id?: string
+          issue_date?: string | null
           last_name: string
           phone: string
           roll_no: string
           status?: string
+          student_id?: string | null
           updated_at?: string
           user_id?: string | null
+          valid_through?: string | null
         }
         Update: {
           address_city?: string
@@ -155,15 +167,48 @@ export type Database = {
           card_number?: string | null
           class?: string
           created_at?: string
+          dob?: string | null
           email?: string
+          father_name?: string | null
+          field?: string | null
           first_name?: string
           id?: string
+          issue_date?: string | null
           last_name?: string
           phone?: string
           roll_no?: string
           status?: string
+          student_id?: string | null
           updated_at?: string
           user_id?: string | null
+          valid_through?: string | null
+        }
+        Relationships: []
+      }
+      non_students: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          phone: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          phone?: string | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          role?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -199,6 +244,39 @@ export type Database = {
           roll_number?: string | null
           student_class?: string | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      students: {
+        Row: {
+          card_id: string
+          class: string | null
+          created_at: string
+          field: string | null
+          id: string
+          name: string
+          roll_no: string | null
+          user_id: string
+        }
+        Insert: {
+          card_id: string
+          class?: string | null
+          created_at?: string
+          field?: string | null
+          id?: string
+          name: string
+          roll_no?: string | null
+          user_id: string
+        }
+        Update: {
+          card_id?: string
+          class?: string | null
+          created_at?: string
+          field?: string | null
+          id?: string
+          name?: string
+          roll_no?: string | null
           user_id?: string
         }
         Relationships: []
