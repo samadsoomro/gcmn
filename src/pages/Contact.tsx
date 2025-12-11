@@ -84,32 +84,65 @@ const Contact: React.FC = () => {
     }
   };
 
+  const contactCards = [
+    { icon: <MapPin />, title: 'Address', content: 'Nazimabad, Karachi, Pakistan' },
+    { icon: <Phone />, title: 'Phone', content: '+92 21 XXXX XXXX' },
+    { icon: <Mail />, title: 'Email', content: 'library@gcmn.edu.pk' },
+    { icon: <Clock />, title: 'Hours', content: 'Mon-Fri: 9AM - 1PM' },
+  ];
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
     <motion.div className="min-h-screen pt-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       {/* Hero Section */}
-      <div className="py-12 lg:py-16 gradient-dark text-white text-center">
+      <div className="py-12 lg:py-16 gradient-dark text-white text-center overflow-hidden">
         <div className="container">
-          <h1 className="text-3xl lg:text-4xl font-bold mb-4">Contact Us</h1>
-          <p className="text-lg text-white/90">Get in touch with GCMN Library</p>
+          <motion.h1 
+            className="text-3xl lg:text-4xl font-bold mb-4"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Contact Us
+          </motion.h1>
+          <motion.p 
+            className="text-lg text-white/90"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+          >
+            Get in touch with GCMN Library
+          </motion.p>
         </div>
       </div>
 
       <div className="py-12 lg:py-16">
         <div className="container">
           {/* Contact Info Cards */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {[
-              { icon: <MapPin />, title: 'Address', content: 'Nazimabad, Karachi, Pakistan' },
-              { icon: <Phone />, title: 'Phone', content: '+92 21 XXXX XXXX' },
-              { icon: <Mail />, title: 'Email', content: 'library@gcmn.edu.pk' },
-              { icon: <Clock />, title: 'Hours', content: 'Mon-Fri: 9AM - 1PM' },
-            ].map((item, i) => (
+          <motion.div 
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+          >
+            {contactCards.map((item) => (
               <motion.div 
                 key={item.title} 
-                className="bg-card p-6 rounded-xl border border-border text-center hover:shadow-lg transition-all" 
-                initial={{ opacity: 0, y: 20 }} 
-                animate={{ opacity: 1, y: 0 }} 
-                transition={{ delay: i * 0.1 }}
+                className="bg-card p-6 rounded-xl border border-border text-center hover:shadow-lg hover:-translate-y-1 transition-all" 
+                variants={itemVariants}
               >
                 <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-primary/10 rounded-full text-primary">
                   {item.icon}
@@ -118,16 +151,17 @@ const Contact: React.FC = () => {
                 <p className="text-muted-foreground text-sm">{item.content}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Contact Form and Map Grid */}
           <div className="grid lg:grid-cols-2 gap-8 mb-12">
             {/* Contact Form */}
             <motion.div 
               className="bg-card p-8 rounded-xl border border-border"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
             >
               <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
                 <MessageSquare className="text-primary" />
@@ -229,11 +263,12 @@ const Contact: React.FC = () => {
             {/* Map */}
             <motion.div 
               className="rounded-xl overflow-hidden border border-border h-full min-h-[400px]"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
             >
-              <iframe 
+              <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3619.5430358880396!2d67.03380137496951!3d24.920700041252727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33f90157042d3%3A0x93d609e8bdb6ac95!2sGovernment%20College%20for%20Men%20Nazimabad!5e0!3m2!1sen!2s!4v1704067200000!5m2!1sen!2s"
                 width="100%" 
                 height="100%" 
@@ -249,9 +284,10 @@ const Contact: React.FC = () => {
           {/* Office Hours Section */}
           <motion.div 
             className="bg-card p-8 rounded-xl border border-border mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
               <Clock className="text-primary" />
