@@ -18,8 +18,12 @@ import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
+import LibraryCard from "@/pages/LibraryCard";
+import Donate from "@/pages/Donate";
 import AdminMessages from "@/pages/admin/Messages";
 import BorrowedBooks from "@/pages/admin/BorrowedBooks";
+import AdminLibraryCards from "@/pages/admin/LibraryCards";
+import AdminDonations from "@/pages/admin/Donations";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +48,8 @@ const AppContent = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/library-card" element={<LibraryCard />} />
+          <Route path="/donate" element={<Donate />} />
           <Route
             path="/admin/messages"
             element={
@@ -57,6 +63,22 @@ const AppContent = () => {
             element={
               <ProtectedRoute requireAdmin>
                 <BorrowedBooks />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/library-cards"
+            element={
+              <ProtectedRoute requireAdmin>
+                <AdminLibraryCards />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/donations"
+            element={
+              <ProtectedRoute requireAdmin>
+                <AdminDonations />
               </ProtectedRoute>
             }
           />

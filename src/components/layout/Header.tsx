@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, User, LogOut, Shield } from 'lucide-react';
+import { Menu, X, User, LogOut, Shield, Heart, CreditCard } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -37,6 +37,7 @@ const Header: React.FC = () => {
     { path: '/books', label: 'Books' },
     { path: '/notes', label: 'Notes' },
     { path: '/rare-books', label: 'Rare Books' },
+    { path: '/library-card', label: 'Library Card' },
     { path: '/about', label: 'About' },
     { path: '/contact', label: 'Contact' },
   ];
@@ -45,6 +46,8 @@ const Header: React.FC = () => {
     ? [
         { path: '/admin/messages', label: 'Messages' },
         { path: '/admin/books/borrow', label: 'Borrowed Books' },
+        { path: '/admin/library-cards', label: 'Library Cards' },
+        { path: '/admin/donations', label: 'Donations' },
       ]
     : [];
 
@@ -77,12 +80,12 @@ const Header: React.FC = () => {
           </Link>
 
           {/* Desktop Nav */}
-          <ul className="hidden lg:flex items-center gap-6">
+          <ul className="hidden lg:flex items-center gap-5">
             {navLinks.map((link) => (
               <li key={link.path}>
                 <Link
                   to={link.path}
-                  className={`relative font-medium transition-colors py-2 ${
+                  className={`relative font-medium transition-colors py-2 text-sm ${
                     location.pathname === link.path
                       ? 'text-primary'
                       : 'text-foreground hover:text-primary'
@@ -102,7 +105,7 @@ const Header: React.FC = () => {
               <li key={link.path}>
                 <Link
                   to={link.path}
-                  className={`relative font-medium transition-colors py-2 flex items-center gap-1 ${
+                  className={`relative font-medium transition-colors py-2 flex items-center gap-1 text-sm ${
                     location.pathname === link.path
                       ? 'text-primary'
                       : 'text-foreground hover:text-primary'
@@ -121,8 +124,14 @@ const Header: React.FC = () => {
             ))}
           </ul>
 
-          {/* Theme Toggle & Auth Buttons */}
+          {/* Theme Toggle, Donate & Auth Buttons */}
           <div className="hidden lg:flex items-center gap-3">
+            <Link to="/donate">
+              <Button variant="outline" size="sm" className="gap-2 border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground">
+                <Heart size={16} />
+                Donate
+              </Button>
+            </Link>
             <ThemeToggle />
             {user ? (
               <>
@@ -145,10 +154,10 @@ const Header: React.FC = () => {
             ) : (
               <>
                 <Link to="/login">
-                  <Button variant="ghost">Login</Button>
+                  <Button variant="ghost" size="sm">Login</Button>
                 </Link>
                 <Link to="/register">
-                  <Button className="bg-primary hover:bg-primary/90">Register</Button>
+                  <Button size="sm" className="bg-primary hover:bg-primary/90">Register</Button>
                 </Link>
               </>
             )}
@@ -156,6 +165,11 @@ const Header: React.FC = () => {
 
           {/* Mobile Theme Toggle & Menu Toggle */}
           <div className="lg:hidden flex items-center gap-2">
+            <Link to="/donate">
+              <Button variant="outline" size="icon" className="border-primary/50 text-primary">
+                <Heart size={18} />
+              </Button>
+            </Link>
             <ThemeToggle />
             <button
               className="p-2 rounded-lg hover:bg-secondary transition-colors"

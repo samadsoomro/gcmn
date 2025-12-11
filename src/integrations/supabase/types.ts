@@ -80,6 +80,93 @@ export type Database = {
         }
         Relationships: []
       }
+      donations: {
+        Row: {
+          amount: number
+          created_at: string
+          email: string | null
+          id: string
+          message: string | null
+          method: string
+          name: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          email?: string | null
+          id?: string
+          message?: string | null
+          method: string
+          name?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          email?: string | null
+          id?: string
+          message?: string | null
+          method?: string
+          name?: string | null
+        }
+        Relationships: []
+      }
+      library_card_applications: {
+        Row: {
+          address_city: string
+          address_state: string
+          address_street: string
+          address_zip: string
+          card_number: string | null
+          class: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          phone: string
+          roll_no: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address_city: string
+          address_state: string
+          address_street: string
+          address_zip: string
+          card_number?: string | null
+          class: string
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          phone: string
+          roll_no: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address_city?: string
+          address_state?: string
+          address_street?: string
+          address_zip?: string
+          card_number?: string | null
+          class?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string
+          roll_no?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
