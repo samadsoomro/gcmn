@@ -13,6 +13,7 @@ const Register: React.FC = () => {
     full_name: '',
     email: '',
     phone: '',
+    student_class: '',
     roll_number: '',
     department: '',
     password: '',
@@ -30,6 +31,15 @@ const Register: React.FC = () => {
     'Pre-Engineering',
     'Humanities',
     'Commerce',
+  ];
+
+  const studentClasses = [
+    'Class 11',
+    'Class 12',
+    'ADA I',
+    'ADA II',
+    'BSC I',
+    'BSC II',
   ];
 
   // Redirect if already logged in
@@ -65,6 +75,7 @@ const Register: React.FC = () => {
       password: formData.password,
       full_name: formData.full_name,
       phone: formData.phone,
+      student_class: formData.student_class,
       roll_number: formData.roll_number,
       department: formData.department,
     });
@@ -172,6 +183,26 @@ const Register: React.FC = () => {
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })} 
               placeholder="+92 300 1234567" 
             />
+          </div>
+          
+          <div>
+            <label className="text-sm font-medium text-foreground flex items-center gap-2 mb-2">
+              <GraduationCap size={16} />
+              Class
+            </label>
+            <Select 
+              value={formData.student_class} 
+              onValueChange={(value) => setFormData({ ...formData, student_class: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select your class" />
+              </SelectTrigger>
+              <SelectContent>
+                {studentClasses.map((cls) => (
+                  <SelectItem key={cls} value={cls}>{cls}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
           <div>
