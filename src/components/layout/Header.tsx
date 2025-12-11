@@ -47,6 +47,7 @@ const Header: React.FC = () => {
         { path: '/admin/messages', label: 'Messages' },
         { path: '/admin/books/borrow', label: 'Borrowed Books' },
         { path: '/admin/library-cards', label: 'Library Cards' },
+        { path: '/admin/users', label: 'Users' },
         { path: '/admin/donations', label: 'Donations' },
       ]
     : [];

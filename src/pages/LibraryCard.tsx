@@ -28,6 +28,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { jsPDF } from "jspdf";
+import collegeLogo from "@/assets/images/college-logo.png";
 
 // Helper function to generate QR code URL
 const getQRCodeUrl = (text: string, size: number = 100) => {
@@ -44,11 +45,15 @@ const benefits = [
 ];
 
 const classes = ["Class 11", "Class 12", "ADA I", "ADA II", "BSC I", "BSC II"];
+const fields = ["Computer Science", "Pre-Medical", "Pre-Engineering", "Humanities", "Commerce"];
 
 interface FormData {
   firstName: string;
   lastName: string;
+  fatherName: string;
+  dob: string;
   studentClass: string;
+  field: string;
   rollNo: string;
   email: string;
   phone: string;
@@ -60,6 +65,9 @@ interface FormData {
 
 interface SubmissionResult {
   cardNumber: string;
+  studentId: string;
+  issueDate: string;
+  validThrough: string;
   formData: FormData;
 }
 
@@ -70,7 +78,10 @@ const LibraryCard = () => {
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
+    fatherName: "",
+    dob: "",
     studentClass: "",
+    field: "",
     rollNo: "",
     email: "",
     phone: "",
@@ -87,7 +98,7 @@ const LibraryCard = () => {
   };
 
   const validateStep1 = () => {
-    if (!formData.firstName || !formData.lastName || !formData.studentClass || !formData.rollNo) {
+    if (!formData.firstName || !formData.lastName || !formData.fatherName || !formData.dob || !formData.studentClass || !formData.field || !formData.rollNo) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -151,7 +162,10 @@ const LibraryCard = () => {
           user_id: user?.id || null,
           first_name: formData.firstName,
           last_name: formData.lastName,
+          father_name: formData.fatherName,
+          dob: formData.dob,
           class: formData.studentClass,
+          field: formData.field,
           roll_no: formData.rollNo,
           email: formData.email,
           phone: formData.phone,
@@ -160,13 +174,16 @@ const LibraryCard = () => {
           address_state: formData.addressState,
           address_zip: formData.addressZip,
         })
-        .select("card_number")
+        .select("card_number, student_id, issue_date, valid_through")
         .single();
 
       if (error) throw error;
 
       setSubmissionResult({
         cardNumber: data.card_number,
+        studentId: data.student_id,
+        issueDate: data.issue_date,
+        validThrough: data.valid_through,
         formData,
       });
 
@@ -190,7 +207,7 @@ const LibraryCard = () => {
     if (!submissionResult) return;
 
     const doc = new jsPDF();
-    const { cardNumber, formData } = submissionResult;
+    const { cardNumber, studentId, issueDate, validThrough, formData } = submissionResult;
 
     // Fetch QR Code as image
     const qrCodeUrl = getQRCodeUrl(cardNumber, 100);
@@ -202,55 +219,178 @@ const LibraryCard = () => {
       reader.readAsDataURL(blob);
     });
 
-    // Card background
-    doc.setFillColor(22, 78, 59); // Primary green
-    doc.roundedRect(20, 20, 170, 100, 5, 5, "F");
+    // Load logo
+    const logoImg = new Image();
+    logoImg.crossOrigin = "anonymous";
+    logoImg.src = collegeLogo;
+    
+    await new Promise((resolve) => {
+      logoImg.onload = resolve;
+    });
 
-    // Header
+    // Create canvas for logo
+    const canvas = document.createElement('canvas');
+    canvas.width = logoImg.width;
+    canvas.height = logoImg.height;
+    const ctx = canvas.getContext('2d');
+    ctx?.drawImage(logoImg, 0, 0);
+    const logoDataUrl = canvas.toDataURL('image/png');
+
+    // ============ FRONT SIDE ============
+    // Card background with border
+    doc.setFillColor(255, 255, 255);
+    doc.setDrawColor(22, 78, 59);
+    doc.setLineWidth(2);
+    doc.roundedRect(15, 15, 180, 120, 5, 5, "FD");
+
+    // Header section - Green band
+    doc.setFillColor(22, 78, 59);
+    doc.rect(15, 15, 180, 35, "F");
+
+    // Add logo
+    doc.addImage(logoDataUrl, "PNG", 90, 17, 30, 30);
+
+    // Government text
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(20);
-    doc.setFont("helvetica", "bold");
-    doc.text("GC Men Nazimabad Library", 105, 38, { align: "center" });
-
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "normal");
-    doc.text("LIBRARY CARD", 105, 48, { align: "center" });
-
-    // Divider
-    doc.setDrawColor(255, 255, 255);
-    doc.setLineWidth(0.5);
-    doc.line(30, 55, 180, 55);
-
-    // Student details
-    doc.setFontSize(11);
-    doc.text(`Name: ${formData.firstName} ${formData.lastName}`, 30, 68);
-    doc.text(`Class: ${formData.studentClass}`, 30, 78);
-    doc.text(`Roll No: ${formData.rollNo}`, 30, 88);
-    doc.text(`Card ID: ${cardNumber}`, 30, 98);
-    doc.text(`Issue Date: ${new Date().toLocaleDateString()}`, 30, 108);
-
-    // QR Code
-    doc.addImage(qrCodeDataUrl, "PNG", 145, 60, 35, 35);
-
-    // Footer text
     doc.setFontSize(8);
-    doc.setTextColor(100, 100, 100);
-    doc.text("This card is the property of GC Men Nazimabad Library.", 105, 135, { align: "center" });
-    doc.text("Please present this card when borrowing books.", 105, 142, { align: "center" });
+    doc.setFont("helvetica", "normal");
+    doc.text("Government of Sindh", 105, 22, { align: "center" });
+    doc.text("College Education Department", 105, 27, { align: "center" });
 
-    // Student info section
-    doc.setFontSize(14);
-    doc.setTextColor(22, 78, 59);
-    doc.setFont("helvetica", "bold");
-    doc.text("Student Information", 20, 165);
-
+    // College name
     doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text("GOVT COLLEGE FOR MEN NAZIMABAD", 105, 47, { align: "center" });
+
+    // Library Card title
+    doc.setFontSize(10);
+    doc.setTextColor(22, 78, 59);
+    doc.text("LIBRARY CARD", 105, 57, { align: "center" });
+
+    // Divider line
+    doc.setDrawColor(22, 78, 59);
+    doc.setLineWidth(0.5);
+    doc.line(25, 60, 185, 60);
+
+    // Student details - Left side
+    doc.setFontSize(9);
     doc.setTextColor(60, 60, 60);
     doc.setFont("helvetica", "normal");
-    doc.text(`Email: ${formData.email}`, 20, 178);
-    doc.text(`Phone: ${formData.phone}`, 20, 188);
-    doc.text(`Address: ${formData.addressStreet}`, 20, 198);
-    doc.text(`${formData.addressCity}, ${formData.addressState} ${formData.addressZip}`, 20, 208);
+
+    const leftX = 25;
+    let y = 68;
+    const lineHeight = 7;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Name:", leftX, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${formData.firstName} ${formData.lastName}`, leftX + 25, y);
+    y += lineHeight;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Father Name:", leftX, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(formData.fatherName, leftX + 32, y);
+    y += lineHeight;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Date of Birth:", leftX, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(new Date(formData.dob).toLocaleDateString('en-GB'), leftX + 32, y);
+    y += lineHeight;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Class:", leftX, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(formData.studentClass, leftX + 18, y);
+    y += lineHeight;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Field/Group:", leftX, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(formData.field, leftX + 28, y);
+    y += lineHeight;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Roll Number:", leftX, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(formData.rollNo, leftX + 28, y);
+
+    // Right side details
+    const rightX = 115;
+    y = 68;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Library Card ID:", rightX, y);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(22, 78, 59);
+    doc.text(cardNumber, rightX + 35, y);
+    doc.setTextColor(60, 60, 60);
+    y += lineHeight;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Student ID:", rightX, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(studentId, rightX + 25, y);
+    y += lineHeight;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Issue Date:", rightX, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(new Date(issueDate).toLocaleDateString('en-GB'), rightX + 25, y);
+    y += lineHeight;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Valid Through:", rightX, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(new Date(validThrough).toLocaleDateString('en-GB'), rightX + 30, y);
+
+    // QR Code
+    doc.addImage(qrCodeDataUrl, "PNG", 150, 92, 30, 30);
+
+    // Principal signature line
+    doc.setDrawColor(100, 100, 100);
+    doc.setLineWidth(0.3);
+    doc.line(25, 125, 70, 125);
+    doc.setFontSize(7);
+    doc.setTextColor(100, 100, 100);
+    doc.text("Principal's Signature", 47.5, 130, { align: "center" });
+
+    // ============ BACK SIDE ============
+    // Card background
+    doc.setFillColor(245, 245, 245);
+    doc.setDrawColor(22, 78, 59);
+    doc.setLineWidth(2);
+    doc.roundedRect(15, 150, 180, 80, 5, 5, "FD");
+
+    // Header
+    doc.setFillColor(22, 78, 59);
+    doc.rect(15, 150, 180, 15, "F");
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("TERMS & CONDITIONS", 105, 159, { align: "center" });
+
+    // Disclaimer text
+    doc.setTextColor(60, 60, 60);
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+
+    const disclaimerY = 172;
+    const disclaimerLines = [
+      "• This card is NOT TRANSFERABLE.",
+      "• If lost, stolen, or damaged, report immediately to the GCMN Library.",
+      "• The college is not responsible for misuse.",
+      "• If found, please return to Government College for Men Nazimabad.",
+      "",
+      "Contact: Library, GCMN, Nazimabad, Karachi",
+      "Email: library@gcmn.edu.pk"
+    ];
+
+    disclaimerLines.forEach((line, index) => {
+      doc.text(line, 25, disclaimerY + (index * 7));
+    });
 
     doc.save(`library-card-${cardNumber}.pdf`);
   };
@@ -282,8 +422,11 @@ const LibraryCard = () => {
                     {submissionResult.cardNumber}
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Save this card number for your records
+                <p className="text-sm text-muted-foreground mb-2">
+                  Library Card ID - Use this to register for library access
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Student ID: {submissionResult.studentId}
                 </p>
               </CardContent>
             </Card>
@@ -415,22 +558,60 @@ const LibraryCard = () => {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="class">Class *</Label>
-                      <Select
-                        value={formData.studentClass}
-                        onValueChange={(value) => handleInputChange("studentClass", value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your class" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {classes.map((c) => (
-                            <SelectItem key={c} value={c}>
-                              {c}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <Label htmlFor="fatherName">Father Name *</Label>
+                      <Input
+                        id="fatherName"
+                        value={formData.fatherName}
+                        onChange={(e) => handleInputChange("fatherName", e.target.value)}
+                        placeholder="Enter father's name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="dob">Date of Birth *</Label>
+                      <Input
+                        id="dob"
+                        type="date"
+                        value={formData.dob}
+                        onChange={(e) => handleInputChange("dob", e.target.value)}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="class">Class *</Label>
+                        <Select
+                          value={formData.studentClass}
+                          onValueChange={(value) => handleInputChange("studentClass", value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select your class" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {classes.map((c) => (
+                              <SelectItem key={c} value={c}>
+                                {c}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="field">Field / Group *</Label>
+                        <Select
+                          value={formData.field}
+                          onValueChange={(value) => handleInputChange("field", value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select your field" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {fields.map((f) => (
+                              <SelectItem key={f} value={f}>
+                                {f}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="rollNo">Roll Number *</Label>

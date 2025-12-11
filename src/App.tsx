@@ -24,6 +24,7 @@ import AdminMessages from "@/pages/admin/Messages";
 import BorrowedBooks from "@/pages/admin/BorrowedBooks";
 import AdminLibraryCards from "@/pages/admin/LibraryCards";
 import AdminDonations from "@/pages/admin/Donations";
+import AdminRegisteredUsers from "@/pages/admin/RegisteredUsers";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -79,6 +80,14 @@ const AppContent = () => {
             element={
               <ProtectedRoute requireAdmin>
                 <AdminDonations />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute requireAdmin>
+                <AdminRegisteredUsers />
               </ProtectedRoute>
             }
           />
