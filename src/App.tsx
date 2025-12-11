@@ -10,6 +10,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SplashScreen from "@/components/common/SplashScreen";
 import ScrollToTop from "@/components/common/ScrollToTop";
+import BackToTop from "@/components/common/BackToTop";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Home from "@/pages/Home";
 import Books from "@/pages/Books";
@@ -97,6 +98,7 @@ const AppContent = () => {
         </Routes>
       </main>
       <Footer />
+      <BackToTop />
     </div>
   );
 };
