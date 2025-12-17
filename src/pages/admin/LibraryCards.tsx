@@ -68,7 +68,7 @@ const LibraryCards = () => {
 
       if (error) throw error;
       setApplications((data as LibraryCardApplication[]) || []);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching applications:", error);
       toast({
         title: "Error",
@@ -98,6 +98,7 @@ const LibraryCards = () => {
     return () => {
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateStatus = async (id: string, status: string) => {
@@ -113,7 +114,7 @@ const LibraryCards = () => {
         title: "Status Updated",
         description: `Application status changed to ${status}.`,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error updating status:", error);
       toast({
         title: "Error",
@@ -138,7 +139,7 @@ const LibraryCards = () => {
         title: "Deleted",
         description: "Application has been deleted.",
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error deleting application:", error);
       toast({
         title: "Error",

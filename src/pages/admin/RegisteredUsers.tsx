@@ -58,7 +58,7 @@ const RegisteredUsers = () => {
 
       setStudents(studentsRes.data || []);
       setNonStudents(nonStudentsRes.data || []);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching users:", error);
       toast({
         title: "Error",
@@ -96,6 +96,7 @@ const RegisteredUsers = () => {
       supabase.removeChannel(studentsChannel);
       supabase.removeChannel(nonStudentsChannel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const deleteStudent = async (id: string) => {
@@ -105,7 +106,7 @@ const RegisteredUsers = () => {
       const { error } = await supabase.from("students").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Deleted", description: "Student record deleted." });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error deleting student:", error);
       toast({
         title: "Error",
@@ -122,7 +123,7 @@ const RegisteredUsers = () => {
       const { error } = await supabase.from("non_students").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Deleted", description: "User record deleted." });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error deleting user:", error);
       toast({
         title: "Error",

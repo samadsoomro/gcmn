@@ -18,7 +18,7 @@ const Login: React.FC = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      const from = (location.state as any)?.from?.pathname || (isAdmin ? '/admin/messages' : '/');
+      const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || (isAdmin ? '/admin/messages' : '/');
       navigate(from, { replace: true });
     }
   }, [user, isAdmin, navigate, location]);

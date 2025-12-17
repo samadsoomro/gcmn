@@ -191,11 +191,11 @@ const LibraryCard = () => {
         title: "Application Submitted!",
         description: "Your library card application has been submitted successfully.",
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error submitting application:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to submit application. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to submit application. Please try again.",
         variant: "destructive",
       });
     } finally {

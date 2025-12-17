@@ -66,6 +66,7 @@ const AdminMessages: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchMessages = async () => {

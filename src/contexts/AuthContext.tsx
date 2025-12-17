@@ -142,7 +142,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       return { success: true };
-    } catch (error: any) {
+    } catch (error) {
       console.error('Login error:', error);
       return { success: false, error: 'An error occurred during login' };
     }
@@ -198,7 +198,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       return { success: true };
-    } catch (error: any) {
+    } catch (error) {
       console.error('Registration error:', error);
       return { success: false, error: 'An error occurred during registration' };
     }
