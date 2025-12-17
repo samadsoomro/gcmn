@@ -39,7 +39,7 @@ const Donations = () => {
 
       if (error) throw error;
       setDonations(data || []);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching donations:", error);
       toast({
         title: "Error",
@@ -68,6 +68,7 @@ const Donations = () => {
     return () => {
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const deleteDonation = async (id: string) => {
@@ -82,7 +83,7 @@ const Donations = () => {
         title: "Deleted",
         description: "Donation record has been deleted.",
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error deleting donation:", error);
       toast({
         title: "Error",

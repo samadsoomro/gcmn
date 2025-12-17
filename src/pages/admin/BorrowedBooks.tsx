@@ -86,6 +86,7 @@ const BorrowedBooks: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleMarkReturned = async (id: string) => {

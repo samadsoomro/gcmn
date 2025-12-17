@@ -55,7 +55,7 @@ const Donate = () => {
         title: "Thank You!",
         description: "Your donation has been recorded. We appreciate your support!",
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error recording donation:", error);
       toast({
         title: "Error",

@@ -96,7 +96,7 @@ const Register: React.FC = () => {
       }
 
       setCardData(data);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error looking up card:', err);
       setCardError('Failed to lookup card. Please try again.');
     } finally {
@@ -167,9 +167,9 @@ const Register: React.FC = () => {
 
         setSuccess(true);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Registration error:', err);
-      setError(err.message || 'Registration failed');
+      setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -229,9 +229,9 @@ const Register: React.FC = () => {
 
         setSuccess(true);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Registration error:', err);
-      setError(err.message || 'Registration failed');
+      setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
       setLoading(false);
     }
